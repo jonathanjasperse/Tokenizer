@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A local, standalone byte-pair-encoding tokenizer using OpenAI's public vocabularies. No model or API key required.">
+  <title>Tokenizer — local BPE tokenizer</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#text-input">Skip to the input</a>
+
+  <main class="shell">
+    <section class="hero">
+      <h1>Tokenizer</h1>
+    </section>
+
+    <section class="workspace" aria-label="Tokenizer">
+      <div id="error-banner" class="error-banner" role="alert" hidden>
+        <span id="error-text"></span>
+        <button type="button" id="dismiss-error" class="icon-button" aria-label="Dismiss error">×</button>
+      </div>
+
+      <div class="encoding-block">
+        <div id="tabs" class="tabs" role="tablist" aria-label="Token encoding" aria-busy="true"></div>
+        <p id="encoding-description" class="encoding-description">Loading encodings…</p>
+      </div>
+
+      <div id="token-panel" role="tabpanel">
+        <div class="editor">
+          <label class="sr-only" for="text-input">Text to tokenize</label>
+          <textarea id="text-input" placeholder="Enter some text" spellcheck="false" autocomplete="off" autocapitalize="off"></textarea>
+          <div class="editor-actions">
+            <button type="button" id="clear-button" class="button">Clear</button>
+            <button type="button" id="example-button" class="button">Show example</button>
+            <span id="status" class="status" role="status">Ready</span>
+          </div>
+        </div>
+
+        <dl class="stats" aria-live="polite">
+          <div class="stat"><dt>Tokens</dt><dd id="token-count">0</dd></div>
+          <div class="stat"><dt>Characters</dt><dd id="char-count">0</dd></div>
+          <div class="stat"><dt>Bytes</dt><dd id="byte-count">0</dd></div>
+        </dl>
+
+        <section class="breakdown" aria-labelledby="breakdown-title">
+          <div class="breakdown-head">
+            <div>
+              <h3 id="breakdown-title">Token breakdown</h3>
+              <p>Each block is one token. Click a token to copy its ID.</p>
+            </div>
+            <label class="switch"><input type="checkbox" id="show-ids"> <span>Show IDs</span></label>
+          </div>
+          <div id="token-view" class="token-view">
+            <p class="empty">Start typing to see how the text is split into tokens.</p>
+          </div>
+          <p id="render-note" class="render-note" hidden></p>
+          <p class="hint">Whitespace is drawn as <span class="symbol">·</span> space, <span class="symbol">↵</span> newline, <span class="symbol">⇥</span> tab. A multi-byte character can span tokens; incomplete bytes appear as <code>\xNN</code>.</p>
+        </section>
+
+        <details class="ids" id="ids-panel">
+          <summary>Token IDs</summary>
+          <div class="ids-body">
+            <code id="token-ids">—</code>
+            <button type="button" id="copy-ids" class="button small" disabled>Copy all</button>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <footer class="footer"></footer>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <noscript><p class="noscript">This tokenizer needs JavaScript enabled to render tokens.</p></noscript>
+</body>
+</html>
