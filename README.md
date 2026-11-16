@@ -1,10 +1,10 @@
 # Tokenizer
 
-A standalone desktop tokenizer in the spirit of [OpenAI's tokenizer](https://platform.openai.com/tokenizer). It runs the real byte-pair-encoding (BPE) vocabularies used by OpenAI models, with a Go backend and a small vanilla JavaScript frontend.
+A standalone desktop tokenizer clone of [OpenAI's tokenizer](https://platform.openai.com/tokenizer). It runs real byte-pair-encoding (BPE) vocabularies used by OpenAI models, with a Go backend and a vanilla JavaScript frontend.
 
-On Windows, `Tokenizer.exe` opens its own native window — no browser, address bar, or localhost URL to manage. The same code can also run as a local web server if you prefer.
+On Windows, `Tokenizer.exe` opens its own native window — no browser, address bar, or localhost URL to manage. The same code can also run as a local web server.
 
-**No LLM, GPU, API key, or network connection is required at runtime.** Tokenization is a deterministic text-processing step, not something that needs model weights.
+**No LLM, GPU, API key, or network connection is required at runtime.** Tokenization is a deterministic text-processing step.
 
 ![Go](https://img.shields.io/badge/Go-1.22%2B-00ADD8?logo=go&logoColor=white)
 ![Platform](https://img.shields.io/badge/desktop-Windows%2010%2F11-0078D4?logo=windows)
@@ -29,13 +29,10 @@ On Windows, `Tokenizer.exe` opens its own native window — no browser, address 
 
 ## Desktop app
 
-Requirements: Windows 10 or 11 with the **Microsoft Edge WebView2 Runtime**. It is preinstalled on Windows 11 and current Windows 10; if it is missing, the app tells you and links to the installer.
-
+Requirements: Windows 10 or 11 with the **Microsoft Edge WebView2 Runtime**.
 1. Double-click **`Tokenizer.exe`**.
 2. Type text, or click **Show example**.
 3. Close the window to quit. The internal server shuts down with it.
-
-The executable is unsigned because it is built locally. If Windows SmartScreen appears, choose **More info → Run anyway**.
 
 Desktop details:
 
@@ -63,14 +60,6 @@ The desktop build uses [go-webview2](https://github.com/jchv/go-webview2), which
 ```powershell
 go run github.com/akavel/rsrc@latest -manifest app.manifest -ico assets/icon.ico -o rsrc_windows_amd64.syso
 ```
-
-### Changing the app icon
-
-1. Replace `assets/icon.ico` with a multi-size Windows icon (16, 32, 48, 64, 128, and 256 px work well).
-2. Regenerate the resource file with the command above.
-3. Run `.\build.ps1` and relaunch `Tokenizer.exe`.
-
-`rsrc` numbers the manifest as resource ID 1 and the first icon group as ID 2 when both flags are used. `desktop_windows.go` loads ID 2 (`IconId: 2`). If you generate the resources with different flags or tools, make the icon group ID and `IconId` match, otherwise Windows displays its generic application icon.
 
 ## Browser/server mode
 
@@ -114,7 +103,7 @@ Useful starting points:
 
 ### Fast iteration (`-dev`)
 
-Normally the UI is embedded in the executable, so edits require a rebuild. For development, `-dev` serves the files from `web/` on disk instead:
+UI is embedded in the executable, so edits require a rebuild. For development, `-dev` serves the files from `web/` on disk instead:
 
 ```powershell
 .\Tokenizer.exe -dev
@@ -132,7 +121,7 @@ Edit a file, then refresh with **F5** / **Ctrl+R** (or close and reopen the desk
 .\Tokenizer.exe -dev -debug
 ```
 
-When you are happy with the changes, rebuild the self-contained app so the final executable embeds the new files:
+Rebuild the self-contained app so the final executable embeds the new files:
 
 ```powershell
 .\build.ps1

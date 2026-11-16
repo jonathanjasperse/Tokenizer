@@ -30,6 +30,15 @@ var (
 	procGetSystemMetrics    = user32.NewProc("GetSystemMetrics")
 	procGetDpiForSystem     = user32.NewProc("GetDpiForSystem")
 	procGetDpiForWindow     = user32.NewProc("GetDpiForWindow")
+
+	dwmapi                    = windows.NewLazySystemDLL("dwmapi.dll")
+	procDwmSetWindowAttribute = dwmapi.NewProc("DwmSetWindowAttribute")
+)
+
+const (
+	dwmwaUseImmersiveDarkMode = 20
+	dwmwaCaptionColor         = 35
+	dwmwaTextColor            = 36
 )
 
 // runDesktopApplication opens the native window and serves the UI to it from a
@@ -106,6 +115,7 @@ func runDesktopApplication(debug, dev bool) error {
 
 	windowDPI := getWindowDPI(view.Window())
 	log.Printf("Window DPI=%d (%.2fx)", windowDPI, float64(windowDPI)/96)
+	applyDarkTitleBar(view.Window())
 
 	if err := view.Bind("openExternal", func(rawURL string) {
 		if err := openExternalURL(rawURL); err != nil {
@@ -221,6 +231,35 @@ func systemDPIScale() float64 {
 func getWindowDPI(hwnd unsafe.Pointer) uint {
 	dpi, _, _ := procGetDpiForWindow.Call(uintptr(hwnd))
 	return uint(dpi)
+}
+
+// applyDarkTitleBar matches the window chrome to the dark UI. Windows 11 also
+// honors the caption and text colors; older builds fall back to dark mode.
+func applyDarkTitleBar(hwnd unsafe.Pointer) {
+	if hwnd == nil {
+		return
+	}
+	dark := int32(1)
+	if hr, _, err := procDwmSetWindowAttribute.Call(
+		uintptr(hwnd), dwmwaUseImmersiveDarkMode,
+		uintptr(unsafe.Pointer(&dark)), unsafe.Sizeof(dark),
+	); hr != 0 {
+		log.Printf("dark title bar: HRESULT 0x%x (%v)", hr, err)
+	}
+	caption := uint32(0x00171514) // COLORREF for #141517.
+	if hr, _, err := procDwmSetWindowAttribute.Call(
+		uintptr(hwnd), dwmwaCaptionColor,
+		uintptr(unsafe.Pointer(&caption)), unsafe.Sizeof(caption),
+	); hr != 0 {
+		log.Printf("title bar color: HRESULT 0x%x (%v)", hr, err)
+	}
+	text := uint32(0x00F1ECEC) // COLORREF for #ececf1.
+	if hr, _, err := procDwmSetWindowAttribute.Call(
+		uintptr(hwnd), dwmwaTextColor,
+		uintptr(unsafe.Pointer(&text)), unsafe.Sizeof(text),
+	); hr != 0 {
+		log.Printf("title bar text color: HRESULT 0x%x (%v)", hr, err)
+	}
 }
 
 func initialWindowSize(scale float64) (uint, uint) {

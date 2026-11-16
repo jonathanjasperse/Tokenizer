@@ -13,9 +13,10 @@
   <a class="skip-link" href="#text-input">Skip to the input</a>
 
   <main class="shell">
-    <section class="hero">
+    <header class="hero">
       <h1>Tokenizer</h1>
-    </section>
+      <p class="hero-subtitle">See how text splits into tokens.</p>
+    </header>
 
     <section class="workspace" aria-label="Tokenizer">
       <div id="error-banner" class="error-banner" role="alert" hidden>
@@ -49,28 +50,27 @@
           <div class="breakdown-head">
             <div>
               <h3 id="breakdown-title">Token breakdown</h3>
-              <p>Each block is one token. Click a token to copy its ID.</p>
+              <p>Click any token to copy its ID.</p>
             </div>
             <label class="switch"><input type="checkbox" id="show-ids"> <span>Show IDs</span></label>
           </div>
+
           <div id="token-view" class="token-view">
             <p class="empty">Start typing to see how the text is split into tokens.</p>
           </div>
           <p id="render-note" class="render-note" hidden></p>
           <p class="hint">Whitespace is drawn as <span class="symbol">·</span> space, <span class="symbol">↵</span> newline, <span class="symbol">⇥</span> tab. A multi-byte character can span tokens; incomplete bytes appear as <code>\xNN</code>.</p>
-        </section>
 
-        <details class="ids" id="ids-panel">
-          <summary>Token IDs</summary>
-          <div class="ids-body">
-            <code id="token-ids">—</code>
-            <button type="button" id="copy-ids" class="button small" disabled>Copy all</button>
-          </div>
-        </details>
+          <details class="ids" id="ids-panel">
+            <summary>Token IDs</summary>
+            <div class="ids-body">
+              <code id="token-ids">—</code>
+              <button type="button" id="copy-ids" class="button small" disabled>Copy all</button>
+            </div>
+          </details>
+        </section>
       </div>
     </section>
-
-    <footer class="footer"></footer>
   </main>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
